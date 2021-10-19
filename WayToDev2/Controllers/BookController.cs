@@ -27,7 +27,7 @@ namespace WayToDev2.Controllers
         [HttpGet]
         public List<Books> Get() => _book.Find(book => true).ToList();
         // GET: /<controller>/
-        [HttpGet("/id")]
+        [HttpGet("/book/id/{id}")]
         public Books Get(string id) => _book.Find(book => book._Id == id).FirstOrDefault();
     }
 }

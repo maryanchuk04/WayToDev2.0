@@ -6,32 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using WayToDev.Model;
 
-/*
+
 
 namespace WayToDev2.Controllers
 {
     [ApiController]
-    [Route("/course")]
-
+    [Route("/courses")]
     public class CoursesController : Controller
     {
-            private readonly IMongoCollection<Courses> _courses;
+       private readonly IMongoCollection<Courses> _courses;
 
-
-            public CoursesController(IMongoClient client)
-            {
-                var db = client.GetDatabase("WTD");
-                _courses = db.GetCollection<Courses>("Courses");
-
-            }
-            //get all books
-            [HttpGet]
-            public List<Courses> Get() => _courses.Find(Courses => true).ToList();
-        // GET: /<controller>/
+       public CoursesController(IMongoClient client)
+        {
+          var db = client.GetDatabase("WTD");
+          _courses = db.GetCollection<Courses>("Courses");
+        }
 
         [HttpGet]
+        public List<Courses> Get() => _courses.Find(Courses => true).ToList();
+
+        [HttpGet("/courses/id/{id}")]
         public Courses Get(string id) => _courses.Find(course => course._Id == id).FirstOrDefault();
 
     }
 }
-*/

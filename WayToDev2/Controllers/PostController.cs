@@ -24,8 +24,7 @@ namespace WayToDev2.Controllers
         [HttpGet]
         public List<Post> Get() => _post.Find(post => true).ToList();
 
-        [HttpGet("one")]
-
+        [HttpGet("/post/id/{id}")]
         public Post Get(string id) => _post.Find(post => post._Id == id).FirstOrDefault();
 
     }

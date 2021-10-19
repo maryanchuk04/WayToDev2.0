@@ -32,17 +32,19 @@ namespace WayToDev.Controllers
             userscollectoin.InsertOne(_newuser);
         }
         [HttpGet]
-        [Route("/all")]
+        [Route("/user/all")]
         public List<User>Get() => userscollectoin.Find(user => true).ToList();
 
         [HttpPost]
-        [Route("/add")]
+        [Route("/user/add")]
         public User Create(User user)
         {
             userscollectoin.InsertOne(user);
             return user;
         }
 
-
+        [HttpGet("/user/id/{id}")]
+        public User GetId(string id) => userscollectoin.Find(user => user._Id == id).FirstOrDefault();
+        
     }
 }

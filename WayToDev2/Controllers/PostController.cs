@@ -6,12 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using WayToDev.Model;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WayToDev2.Controllers
 {
     [ApiController]
-    [Route("/user")]
+    [Route("/post")]
     public class PostController : Controller
     {
         private readonly IMongoCollection<Post> _post;
@@ -23,10 +22,11 @@ namespace WayToDev2.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Post> getAllposts ()
-        {
-            return _post;
-        }
-        
+        public List<Post> Get() => _post.Find(post => true).ToList();
+
+        [HttpGet("one")]
+
+        public Post Get(string id) => _post.Find(post => post._Id == id).FirstOrDefault();
+
     }
 }

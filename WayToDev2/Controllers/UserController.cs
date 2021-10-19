@@ -21,16 +21,27 @@ namespace WayToDev.Controllers
             userscollectoin = database.GetCollection<User>("User");
         }
         [HttpGet]
+        /*
         public IEnumerable<User> GetUser()
         {
             return userscollectoin.Find(u => u.Name == "Maks").ToList();
-        }
+        }*/
         [HttpPost("/add")]
         public void Addnew(User _newuser)
         {
             userscollectoin.InsertOne(_newuser);
         }
+        [HttpGet]
+        [Route("/all")]
+        public List<User>Get() => userscollectoin.Find(user => true).ToList();
 
+        [HttpPost]
+        [Route("/add")]
+        public User Create(User user)
+        {
+            userscollectoin.InsertOne(user);
+            return user;
+        }
 
 
     }

@@ -11,6 +11,8 @@
     <None Remove="MongoDB.Driver.Core" />
     <None Remove="MongoDB.Driver" />
     <None Remove="MongoDB.Bson" />
+    <None Remove="Microsoft.AspNetCore.Authorization" />
+    <None Remove="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

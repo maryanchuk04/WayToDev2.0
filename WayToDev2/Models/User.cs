@@ -7,7 +7,7 @@ namespace WayToDev.Model
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-         public string _Id { get; set; }
+        public string _Id { get; set; }
 
         [BsonElement("Name")]
         public string Name { get; set; }
@@ -15,7 +15,7 @@ namespace WayToDev.Model
         [BsonElement("login")]
         public string login { get; set; }
 
-       [BsonElement("password")]
+        [BsonElement("password")]
         public string password { get; set; }
 
         [BsonElement("picture")]

@@ -18,11 +18,14 @@ namespace WayToDev.Model
     }
     public class Like
     {
-         User[] users { get; set; }
+         User users { get; set; }
     }
 
-    public class Book
+    public class Books
     {
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        public string _Id { get; set; }
         [BsonElement("title")]
         public string title { get; set; }
 
@@ -36,7 +39,7 @@ namespace WayToDev.Model
         public string description { get; set; }
 
         [BsonElement("like")]
-        public Like like { get; set; }
+        public Like[] like { get; set; }
 
         [BsonElement("comment")]
         public Coment[] comment { get; set; }

@@ -5,7 +5,11 @@ namespace WayToDev.Model
 {
     public class Courses
     {
-        [BsonElement("name")]
+
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        public string _Id { get; set; }
+        [BsonElement("title")]
         public  string Name_course { get; set; }
 
         [BsonElement("link")]

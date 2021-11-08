@@ -20,7 +20,7 @@ namespace WayToDev.Model
 
         [BsonElement("picture")]
         public string picture { get; set; }
-
+        //фіг знає зачем
         [BsonElement("date")]
         public DateTime date { get; set; }
 

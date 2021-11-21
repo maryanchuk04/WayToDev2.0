@@ -35,6 +35,9 @@ namespace WayToDev.Model
         [BsonElement("link")]
         public string link { get; set; }
 
+        [BsonElement("image")]
+        public string image { get; set; }
+
         [BsonElement("description")]
         public string description { get; set; }
 

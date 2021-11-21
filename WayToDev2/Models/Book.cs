@@ -28,7 +28,7 @@ namespace WayToDev.Model
         public string _Id { get; set; }
         [BsonElement("title")]
         public string title { get; set; }
-
+        //hello
         [BsonElement("avtor")]
         public string avtor { get; set; }
 
@@ -40,6 +40,8 @@ namespace WayToDev.Model
 
         [BsonElement("description")]
         public string description { get; set; }
+
+        
 
         [BsonElement("like")]
         public Like[] like { get; set; }

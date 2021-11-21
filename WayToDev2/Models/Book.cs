@@ -38,6 +38,9 @@ namespace WayToDev.Model
         [BsonElement("description")]
         public string description { get; set; }
 
+        [BsonElement("image")]
+        public string image { get; set; }
+
         [BsonElement("like")]
         public Like[] like { get; set; }
 

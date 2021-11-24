@@ -19,24 +19,34 @@ namespace WayToDev
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+       
         
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddControllers();
             services.AddSingleton<IMongoClient, MongoClient>(s =>
             {
                 var uri = s.GetRequiredService<IConfiguration>()["MongoUri"];
                 return new MongoClient(uri);
             });
-           
+            var authOptionsConfiguration = Configuration.GetSection("Auth");
+            services.Configure<AuthOption>(authOptionsConfiguration);
             services.AddControllersWithViews();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    });
+            });
         }
 
 
@@ -49,18 +59,10 @@ namespace WayToDev
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection();          
 
-
-           
-
-  
-
-            app.UseRouting();
-
-            
-
-            app.UseCors(builder => builder.AllowAnyOrigin());
+           app.UseRouting();
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

@@ -19,10 +19,7 @@ namespace WayToDev.Model
         public string password { get; set; }
 
         [BsonElement("picture")]
-        public string picture { get; set; }
-        //фіг знає зачем
-        [BsonElement("date")]
-        public DateTime date { get; set; }
+        public string picture { get; set; }    
 
     }
 }

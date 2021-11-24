@@ -6,10 +6,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using WayToDev.Model;
 using WayToDev2;
+using WayToDev2.Models;
 
 namespace WayToDev.Controllers
 {
@@ -19,17 +21,20 @@ namespace WayToDev.Controllers
     {
         private readonly IMongoCollection<User> userscollectoin;
 
-        public UsersController(IMongoClient client)
+        private readonly IOptions<AuthOption> authOptions;
+
+        public UsersController(IMongoClient client, IOptions<AuthOption> authOptions)
         {
             var database = client.GetDatabase("WTD");
             userscollectoin = database.GetCollection<User>("User");
+            this.authOptions = authOptions;
         }
         [HttpGet]
-        /*
+        
         public IEnumerable<User> GetUser()
         {
             return userscollectoin.Find(u => u.Name == "Maks").ToList();
-        }*/
+        }
         [HttpPost("/add")]
         public void Addnew(User _newuser)
         {
@@ -41,10 +46,18 @@ namespace WayToDev.Controllers
 
         [HttpPost]
         [Route("/user/add")]
-        public User Create(User user)
+        public IActionResult Create(User user)
         {
+            var chyvak = AuthenticateUser(user.login, user.password);
+            if (chyvak!= null)
+            {
+                var token = GenerateJWT(user);
+                return Ok(new { access_token = token });
+
+            }
+            
             userscollectoin.InsertOne(user);
-            return user;
+            return NotFound();
         }
 
         [HttpGet("/user/id/{id}")]
@@ -100,5 +113,42 @@ namespace WayToDev.Controllers
             return null;
         }
         */
-    }
+       
+        [HttpPost]
+         [Route("/user/login/")]
+        public IActionResult Login([FromBody] Login request)
+        {
+            var user = AuthenticateUser(request.Email, request.Password);
+            if (user!=null)
+            {
+                var token = GenerateJWT(user);
+                return Ok(new { access_token = token});
+
+            }
+            return Unauthorized();
+        }
+        
+        private User AuthenticateUser(string email, string password)
+        {
+            return userscollectoin.Find(u => u.login == email && u.password == password).FirstOrDefault();
+        }
+        private string GenerateJWT(User user)
+        {
+            var authParams = authOptions.Value;
+            var securityKey = authParams.GetSymmetricSecurityKey();
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new List<Claim>()
+            {
+                new Claim(JwtRegisteredClaimNames.Email,user.login),
+                new Claim(JwtRegisteredClaimNames.Sub, user._Id.ToString())
+            };
+            var token = new JwtSecurityToken(authParams.Issuer,
+                authParams.Audience,
+                claims,
+                expires: DateTime.Now.AddSeconds(authParams.TokenLifetime),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    }   
 }

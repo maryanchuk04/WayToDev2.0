@@ -1,23 +1,22 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace WayToDev2.Models
 {
-    public class Like
+    public class Comment
     {
-      
-      
-       [BsonIgnore]
-        public string post_id { get; set; }
-        //[Required]
+
+       
+        [BsonIgnoreIfNull]
+        public  string post_id { get; set; }
         
-        public bool IsLike { get; set; }
-     
+        [BsonElement("user_id")]
         public string user_id { get; set; }
 
-    }
+        [BsonElement("text")]
+        public string text { get; set; }
+    }   
 }

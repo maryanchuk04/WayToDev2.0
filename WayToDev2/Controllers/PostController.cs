@@ -29,25 +29,65 @@ namespace WayToDev2.Controllers
 
         [HttpGet("/post/id/{id}")]
         public Post Get(string id) => _post.Find(post => post._Id == id).FirstOrDefault();
-
+        /*For like
+          {
+                "post_Id" : "615c6dab3462270fc84f87cf",
+                "IsLike" : true,
+                "user_id" : "61547667734b00fa4024879f"
+           }
+         */
+        //Likes
         [HttpPost("/post/like")]
         public ActionResult Like([FromBody]Like like)
-        {          
-            if (like.IsLike == "like")
+        {
+            Post postevich = _post.Find(p => p._Id == like.post_id).FirstOrDefault();
+
+            if (postevich.like.Find(p => p.user_id == like.user_id) == null)
             {
-                Post post = _post.Find(p => p._Id == like.Id).FirstOrDefault();
-                post.like += 1;
-                _post.FindOneAndUpdate(p => p._Id == like.Id, Builders<Post>.Update.Set(p => p.like, post.like));
-                return Ok(post);
+                if (like.IsLike)
+                {
+                    Post post = _post.Find(p => p._Id == like.post_id).FirstOrDefault();
+                    post.like.Add(like);
+                    _post.FindOneAndUpdate(p => p._Id == like.post_id, Builders<Post>.Update.Set(p => p.like, post.like));
+                    return Ok(post);
+                }
+                else if (!like.IsLike)
+                {                
+                    return Ok();
+                }
             }
-            else if(like.IsLike == "dislike")
+            else if(postevich.like.Find(p => p.user_id == like.user_id) != null)
             {
-                Post post = _post.Find(p => p._Id == like.Id).FirstOrDefault();
-                post.like -= 1;
-                _post.FindOneAndUpdate(p => p._Id == like.Id, Builders<Post>.Update.Set(p => p.like, post.like));
-                return Ok(post);
+                if (like.IsLike)
+                {                 
+                    return Ok();
+                }
+                else if (!like.IsLike)
+                {
+                    Post post = _post.Find(p => p._Id == like.post_id).FirstOrDefault();
+                    post.like.Remove(like);
+                    _post.FindOneAndUpdate(p => p._Id == like.post_id, Builders<Post>.Update.Set(p => p.like, post.like));
+                    return Ok(post);
+                }
             }
             return Ok();
+        }
+
+        //Comments
+        [HttpPost("/post/comment")]
+        /*For comment
+         {
+             "post_Id" : "615c6dab3462270fc84f87cf",       
+              "user_id" : "61547667734b00fa4024879f"
+              "text" : "Bla bla bla bla"
+          }
+         */
+        public ActionResult WriteComment([FromBody] Comment comment)
+        {
+            Post post  = _post.Find(p => p._Id == comment.post_id).FirstOrDefault();
+            post.comment.Add(comment);
+            _post.FindOneAndUpdate(p => p._Id == comment.post_id, Builders<Post>.Update.Set(p => p.comment, post.comment));
+            return Ok(post);
         }
         
     }

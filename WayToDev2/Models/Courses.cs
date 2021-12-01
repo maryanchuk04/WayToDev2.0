@@ -22,7 +22,7 @@ namespace WayToDev.Model
         public  string avtor { get; set; }
 
         [BsonElement("like")]
-        public Like like { get; set; }
+        public int like { get; set; }
 
         [BsonElement("comment")]
         public Coment[] comment { get; set; }

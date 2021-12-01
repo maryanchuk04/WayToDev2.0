@@ -46,7 +46,7 @@ namespace WayToDev.Controllers
 
         [HttpPost]
         [Route("/user/add")]
-        public IActionResult Create(User user)
+        public IActionResult Create([FromBody] User user)
         {
             var chyvak = AuthenticateUser(user.login, user.password);
             if (chyvak!= null)
@@ -123,7 +123,6 @@ namespace WayToDev.Controllers
             {
                 var token = GenerateJWT(user);
                 return Ok(new { access_token = token});
-
             }
             return Unauthorized();
         }

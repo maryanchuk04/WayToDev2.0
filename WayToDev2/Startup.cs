@@ -17,6 +17,10 @@ using WayToDev2;
 
 namespace WayToDev
 {
+    //Midleware
+    //Google auth
+    //like - 
+
     public class Startup
     {
         public IConfiguration Configuration { get; }
@@ -58,10 +62,10 @@ namespace WayToDev
             {
                 app.UseDeveloperExceptionPage();
             }
-
+           
             app.UseHttpsRedirection();          
 
-           app.UseRouting();
+            app.UseRouting();
             app.UseCors();
 
             app.UseEndpoints(endpoints =>

@@ -5,21 +5,17 @@ namespace WayToDev.Model
 {
     //coment
     public class Coment {
+        public string post { get; set; }
 
         public User avtor { get; set; }
 
         public string text { get; set; }
 
-        public string title { get; set; }
-
         public DateTime date { get; set; }
 
-        public Like[] like { get; set; }
+        public int like { get; set; }
     }
-    public class Like
-    {
-         User users { get; set; }
-    }
+    
 
     public class Books
     {
@@ -42,13 +38,13 @@ namespace WayToDev.Model
         public string description { get; set; }
 
         
-
+        /*
         [BsonElement("like")]
-        public Like[] like { get; set; }
+        public int like { get; set; }
 
         [BsonElement("comment")]
         public Coment[] comment { get; set; }
          
-
+        */
     }
 }

@@ -8,7 +8,6 @@ namespace WayToDev.Model
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string _Id { get; set; }
-
         [BsonElement("title")]
         public string title { get; set; }
 
@@ -22,7 +21,7 @@ namespace WayToDev.Model
         [BsonElement("picture")]
         public string picture { get; set; }
         [BsonElement("like")]
-        public Like[] like { get; set; }
+        public Int32 like { get; set; }
         [BsonElement("coment")]
         public Coment[] comment { get; set; }
     }

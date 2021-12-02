@@ -12,8 +12,8 @@ namespace WayToDev.Model
         [BsonElement("Name")]
         public string Name { get; set; }
 
-        [BsonElement("login")]
-        public string login { get; set; }
+        [BsonElement("Email")]
+        public string Email{ get; set; }
 
         [BsonElement("password")]
         public string password { get; set; }

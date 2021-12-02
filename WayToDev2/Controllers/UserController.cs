@@ -44,15 +44,19 @@ namespace WayToDev.Controllers
         [Route("/user/all")]
         public List<User>Get() => userscollectoin.Find(user => true).ToList();
 
-        [HttpPost]
-        [Route("/user/add")]
+        
+        [HttpPost("/user/registr")]
         public IActionResult Create([FromBody] User user)
         {
-            var chyvak = AuthenticateUser(user.login, user.password);
+            var chyvak = AuthenticateUser(user.Email, user.password);
             if (chyvak!= null)
             {
                 var token = GenerateJWT(user);
-                return Ok(new { access_token = token });
+                user.picture = "https://herrmans.eu/wp-content/uploads/2019/01/765-default-avatar.png";
+                return Ok(new { 
+                    access_token = token,
+                    user_id = user._Id
+                });
 
             }
             
@@ -63,73 +67,26 @@ namespace WayToDev.Controllers
         [HttpGet("/user/id/{id}")]
         public User GetId(string id) => userscollectoin.Find(user => user._Id == id).FirstOrDefault();
 
-        /*
-
-        [HttpPost("/token")]
-        public IActionResult Token(string username, string password)
-        {
-            var identity = GetIdentity(username, password);
-            if (identity == null)
-            {
-                return BadRequest(new { errorText = "Invalid username or password." });
-            }
-
-            var now = DateTime.UtcNow;
-            // создаем JWT-токен
-            var jwt = new JwtSecurityToken(issuer: AuthOptions.ISSUER,
-                                           audience: AuthOptions.AUDIENCE,
-                                           notBefore: now,
-                                           claims: identity.Claims,
-                                           expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                                           signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            var response = new
-            {
-                access_token = encodedJwt,
-                username = identity.Name
-            };
-
-            return JsonResult(response);
-        }
-
         
-
-        private ClaimsIdentity GetIdentity(string username, string password)
-        {
-            User user = (User)userscollectoin.Find(x => x.login == username && x.password == password);
-            if (user != null)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.login) 
-                };
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType);
-                return claimsIdentity;
-            }
-
-            // если пользователя не найдено
-            return null;
-        }
-        */
        
         [HttpPost]
-         [Route("/user/login/")]
+        [Route("/user/login/")]
         public IActionResult Login([FromBody] Login request)
         {
             var user = AuthenticateUser(request.Email, request.Password);
             if (user!=null)
             {
                 var token = GenerateJWT(user);
-                return Ok(new { access_token = token});
+                return Ok(new { access_token = token,
+                    user_id = user._Id
+                });
             }
             return Unauthorized();
         }
         
         private User AuthenticateUser(string email, string password)
         {
-            return userscollectoin.Find(u => u.login == email && u.password == password).FirstOrDefault();
+            return userscollectoin.Find(u => u.Email == email && u.password == password).FirstOrDefault();
         }
         private string GenerateJWT(User user)
         {
@@ -138,8 +95,8 @@ namespace WayToDev.Controllers
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.Email,user.login),
-                new Claim(JwtRegisteredClaimNames.Sub, user._Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Email,user.Email),
+               // new Claim(JwtRegisteredClaimNames.Sub, user._Id.ToString())
             };
             var token = new JwtSecurityToken(authParams.Issuer,
                 authParams.Audience,

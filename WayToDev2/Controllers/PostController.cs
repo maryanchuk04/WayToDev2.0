@@ -53,19 +53,20 @@ namespace WayToDev2.Controllers
                 }
                 else if (!like.IsLike)
                 {                
-                    return Ok();
+                    return BadRequest();
                 }
             }
             else if(postevich.like.Find(p => p.user_id == like.user_id) != null)
             {
                 if (like.IsLike)
-                {                 
-                    return Ok();
+                {
+                    return BadRequest();
                 }
                 else if (!like.IsLike)
                 {
-                    Post post = _post.Find(p => p._Id == like.post_id).FirstOrDefault();
-                    post.like.Remove(like);
+                   Post post =_post.Find(p => p._Id == like.post_id).FirstOrDefault();
+                    //post.like.Remove(like);
+                     post.like.Remove(post.like.Find(p => p.user_id == like.user_id));
                     _post.FindOneAndUpdate(p => p._Id == like.post_id, Builders<Post>.Update.Set(p => p.like, post.like));
                     return Ok(post);
                 }

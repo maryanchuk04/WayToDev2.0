@@ -49,18 +49,20 @@ namespace WayToDev2.Controllers
                     Post post = _post.Find(p => p._Id == like.post_id).FirstOrDefault();
                     post.like.Add(like);
                     _post.FindOneAndUpdate(p => p._Id == like.post_id, Builders<Post>.Update.Set(p => p.like, post.like));
-                    return Ok(post);
+                    return Ok(new { Count = post.like.Count() });
                 }
                 else if (!like.IsLike)
-                {                
-                    return BadRequest();
+                {
+                    Post post = _post.Find(p => p._Id == like.post_id).FirstOrDefault();
+                    return BadRequest(new { Count = post.like.Count()});
                 }
             }
             else if(postevich.like.Find(p => p.user_id == like.user_id) != null)
             {
                 if (like.IsLike)
                 {
-                    return BadRequest();
+                    Post post = _post.Find(p => p._Id == like.post_id).FirstOrDefault();
+                    return BadRequest(new { Count = post.like.Count() });
                 }
                 else if (!like.IsLike)
                 {
@@ -68,13 +70,13 @@ namespace WayToDev2.Controllers
                     //post.like.Remove(like);
                      post.like.Remove(post.like.Find(p => p.user_id == like.user_id));
                     _post.FindOneAndUpdate(p => p._Id == like.post_id, Builders<Post>.Update.Set(p => p.like, post.like));
-                    return Ok(post);
+                    return Ok(new { Count = post.like.Count() });
                 }
             }
             return Ok();
         }
 
-        //Comments
+       //Comments
         [HttpPost("/post/comment")]
         /*For comment
          {
@@ -88,7 +90,7 @@ namespace WayToDev2.Controllers
             Post post  = _post.Find(p => p._Id == comment.post_id).FirstOrDefault();
             post.comment.Add(comment);
             _post.FindOneAndUpdate(p => p._Id == comment.post_id, Builders<Post>.Update.Set(p => p.comment, post.comment));
-            return Ok(post);
+            return Ok(post.comment);
         }
         
     }

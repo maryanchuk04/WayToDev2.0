@@ -36,7 +36,8 @@ namespace WayToDev.Model
 
         [BsonElement("description")]
         public string description { get; set; }
-
+        [BsonElement("category")]
+        public string category { get; set; }
         
         /*
         [BsonElement("like")]

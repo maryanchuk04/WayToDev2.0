@@ -26,5 +26,7 @@ namespace WayToDev.Model
 
         [BsonElement("comment")]
         public Coment[] comment { get; set; }
+        [BsonElement("category")]
+        public string category { get; set; }
     }
 }

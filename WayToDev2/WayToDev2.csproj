@@ -6,6 +6,11 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Token.cs" />
+    <Compile Remove="Models\UserProfile.cs" />
+  </ItemGroup>
 	
 
 

@@ -44,15 +44,17 @@ namespace WayToDev.Controllers
         [Route("/user/all")]
         public List<User>Get() => userscollectoin.Find(user => true).ToList();
 
-        
+        [HttpGet("/user/{id}")]
+        public User Get(string id) => userscollectoin.Find(u => u._Id == id).FirstOrDefault();
         [HttpPost("/user/registr")]
         public IActionResult Create([FromBody] User user)
         {
+            userscollectoin.InsertOne(user);
             var chyvak = AuthenticateUser(user.Email, user.password);
             if (chyvak!= null)
             {
                 var token = GenerateJWT(user);
-                user.picture = "https://herrmans.eu/wp-content/uploads/2019/01/765-default-avatar.png";
+                
                 return Ok(new { 
                     access_token = token,
                     user_id = user._Id
@@ -62,6 +64,14 @@ namespace WayToDev.Controllers
             
             userscollectoin.InsertOne(user);
             return NotFound();
+        }
+
+        [HttpPost("/user/jwt")]
+        public IActionResult GetUser([FromHeader] string token)
+        {
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var user = userscollectoin.Find(u => u._Id == jwt.Subject).FirstOrDefault();
+            return Ok(user);
         }
 
         [HttpGet("/user/id/{id}")]
@@ -96,14 +106,14 @@ namespace WayToDev.Controllers
             var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Email,user.Email),
-               // new Claim(JwtRegisteredClaimNames.Sub, user._Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, user._Id)
             };
             var token = new JwtSecurityToken(authParams.Issuer,
                 authParams.Audience,
                 claims,
                 expires: DateTime.Now.AddSeconds(authParams.TokenLifetime),
                 signingCredentials: credentials);
-
+            
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }   

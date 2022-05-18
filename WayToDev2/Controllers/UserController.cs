@@ -12,6 +12,7 @@ using MongoDB.Driver;
 using WayToDev.Model;
 using WayToDev2;
 using WayToDev2.Models;
+using WayToDev2.ViewModels;
 
 namespace WayToDev.Controllers
 {
@@ -30,7 +31,7 @@ namespace WayToDev.Controllers
             this.authOptions = authOptions;
         }
         [HttpGet]
-        
+
         public IEnumerable<User> GetUser()
         {
             return userscollectoin.Find(u => u.Name == "Maks").ToList();
@@ -54,14 +55,14 @@ namespace WayToDev.Controllers
             if (chyvak!= null)
             {
                 var token = GenerateJWT(user);
-                
-                return Ok(new { 
+
+                return Ok(new {
                     access_token = token,
                     user_id = user._Id
                 });
 
             }
-            
+
             userscollectoin.InsertOne(user);
             return NotFound();
         }
@@ -77,8 +78,8 @@ namespace WayToDev.Controllers
         [HttpGet("/user/id/{id}")]
         public User GetId(string id) => userscollectoin.Find(user => user._Id == id).FirstOrDefault();
 
-        
-       
+
+
         [HttpPost]
         [Route("/user/login/")]
         public IActionResult Login([FromBody] Login request)
@@ -93,7 +94,7 @@ namespace WayToDev.Controllers
             }
             return Unauthorized();
         }
-        
+
         private User AuthenticateUser(string email, string password)
         {
             return userscollectoin.Find(u => u.Email == email && u.password == password).FirstOrDefault();
@@ -113,8 +114,51 @@ namespace WayToDev.Controllers
                 claims,
                 expires: DateTime.Now.AddSeconds(authParams.TokenLifetime),
                 signingCredentials: credentials);
-            
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }   
+
+        [HttpPost("[action]/{id}")]
+        public IActionResult ChangeAvatar(string id, AvatarViewModel avatarViewModel)
+        {
+           var user = userscollectoin.Find(user => user._Id == id).FirstOrDefault();
+
+           userscollectoin.DeleteOne(user._Id);
+           user.picture = avatarViewModel.Avatar;
+
+           userscollectoin.InsertOne(user);
+
+           return Ok(user);
+        }
+
+        [HttpPost("[action]/{id}")]
+        public IActionResult UpdateInfo(string id, User user)
+        {
+            var currentUser = userscollectoin.FindOneAndReplace(x => x._Id == id, user);
+            return Ok(currentUser);
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult GoogleLogin([FromBody] GoogleUser googleUser)
+        {
+            //delete Bad request
+            if (userscollectoin.Find(x => x.Email == googleUser.Email) != null)
+            {
+                return BadRequest("Email is Exist");
+            }
+
+            var user = new User()
+            {
+                Name = googleUser.Name,
+                Email = googleUser.Email,
+                picture = googleUser.Avatar,
+            };
+            userscollectoin.InsertOne(user);
+            var token = GenerateJWT(user);
+            return Ok(new { access_token = token,
+                user = user
+            });
+        }
+    }
+
 }

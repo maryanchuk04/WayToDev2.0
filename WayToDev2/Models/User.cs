@@ -18,12 +18,8 @@ namespace WayToDev.Model
 
         [BsonElement("password")]
         public string password { get; set; }
-        public string password { get; set; }
 
-        [BsonElement("picture")] 
-        public string picture { get; set; } 
-        
-        [BsonElement("favourites")]
-        public List<Courses> favourites { get; set; }    
+        [BsonElement("picture")]
+        public string picture { get; set; }
     }
 }

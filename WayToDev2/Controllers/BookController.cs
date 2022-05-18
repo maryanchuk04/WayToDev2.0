@@ -16,7 +16,6 @@ namespace WayToDev2.Controllers
 
         private readonly IMongoCollection<Books> _book;
 
-      
         public BookController(IMongoClient client)
         {
             var db = client.GetDatabase("WTD");
